@@ -145,7 +145,7 @@ module.exports = handleBlogRouter
 #### 目前划分层级
 
 + 第一层 **bin/www.js**
-  + 创建服务的逻辑
+  + 是创建服务的逻辑
   + 生成服务器，设置端口等
 + 第二层 **app.js**
   + 服务基本设置的聚集地
@@ -255,7 +255,7 @@ const getPostData = req => {
 | author     | varchar(20) |         | Y         |             |         |
 | state      | int         |         | Y         |             | 1       |
 
-### 9 - 操作表
+### 9 - 操作表的语句
 
 + use 库名; // 选择 或 连接 操作的库
 
@@ -302,3 +302,46 @@ const getPostData = req => {
 
 + 新建用户
   + insert into blogs (title, content, createtime, author) values ('标题B','内容B',1546870368066,'lisi' );
+
+### 10 - node 工程安装 MySQL 服务及配置
+
++ 创建配置文件夹 src/conf/
+
+  + 该目录下创建一个数据库的配置文件 `db.js`
+
+    该 db.js 主要是
+
+    1. 获取环境变量，判断环境变量给出 MySQL 对应环境的配置
+    2. 将其配置导出
+
+  + 导出给接下来创建的 mysql.js 使用该配置
+
++ 创建数据库处理文件夹 src/db/
+
+  +  该目录下创建 MySQL 的 处理文件 `mysql.js`
+
+    该 mysql.js ：
+
+    1. npm 安装 MySQL 依赖，并导入依赖
+    2. 将 conf 中的 db.js 配置导入
+    3. 创建 mysql 连接，封装 sql 处理并返回结果的 fn 将其导出
+
++ 上述对接到 controller 结构中
+
+  结构如下
+
+```mermaid
+graph LR
+	subgraph src-conf
+	conf((配置..)) --- conf_db(db.js)
+	end
+	subgraph src-db
+	mysql((数据库处理)) --- mysql_init(mysql.js)
+	end
+	subgraph src-controller
+	controllerClass((控制器.)) --- conBlog(conBlog.js)
+	controllerClass --- conUser(conUser.js)
+	end
+	conf_db --> mysql_init -.- conBlog
+```
+
