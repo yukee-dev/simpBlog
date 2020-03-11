@@ -345,6 +345,6 @@ graph LR
 	conf_db --> mysql_init -.- conBlog
 ```
 
-> 当前 10 小节 对应该 [ stmpBlog v1.0.1 版本](https://github.com/lailer132/simpBlog/tree/v1.0.0)
+> 当前 10 小节 对应该 [ stmpBlog v1.0.1 版本](https://github.com/lailer132/simpBlog/tree/v1.0.1)
 >
 > 以供于学习及回顾以上知识
