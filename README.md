@@ -348,3 +348,84 @@ graph LR
 > 当前 10 小节 对应该 [ stmpBlog v1.0.1 版本](https://github.com/lailer132/simpBlog/tree/v1.0.1)
 >
 > 以供于学习及回顾以上知识
+
+
+
+### 11 - 对接MySQL 小结
+
++ 安装 MySQL 和 workbench（该软件仅为MySQL 视图工具）
++ 创建库、表，SQL 语句的语法和使用
+
++ nodejs 连接 MySQL，如何执行 sql 语句
++ 根据 NODE_ENV 区分配置
++ 封装 exec 函数，API 使用 exec 操作数据库
+
+
+
+### 12 - 登录
+
++ 核心：登录校验 & 登录信息存储
+
++ cookie 和 session
+
+  + 什么是 cookie
+
+    + 存储在浏览器的一段字符串（最大 5kb）
+    + 跨域不共享
+    + 存储结构化数据：k1=v1；k2=v2；...
+    + 每次发送 http 请求，会将请求域的 cookie 一起发送给 server
+    + server 可以修改 cookie 并返回给浏览器
+    + 浏览器也可以通过 js 修改 cookie （有限制）
+
+  + JavaScript 操作 cookie，浏览器中 查看 cookie
+
+    + document.cookie
+
+  + server 端操作 cookie，实现登录验证
+
+    + 查看 cookie
+
+      ```javascript
+      req.cookie = {}
+          const cookieStr = req.headers.cookie.replace(/\s+/g, '') || ''
+          cookieStr.split(';').forEach( item => {
+              if (!item) {
+                  return
+              }
+              const arr = item.split('=')
+              const key = arr[0]
+              const value = arr[1]
+              req.cookie[key] = value
+          })
+          console.log('req.cookie is ...', req.cookie)
+      ```
+
+    + 修改 cookie
+
+      ```javascript
+      res.setHeader('Set-Cookie','配置参数')
+      ```
+
+    > 当前小节 对应该 [ stmpBlog v1.0.2 版本](https://github.com/lailer132/simpBlog/tree/v1.0.1)
+    >
+    > 以供于学习及回顾以上知识
+    >
+    > 知识链
+    >
+    > ```mermaid
+    > graph LR
+    > 	subgraph 获取cookie
+    > 	_root((根目录)) --- app(app.js)
+    > 	end
+    > 	subgraph src-router 处理cookie
+    > 	routers((路由)) --- user(user.js)
+    > 	end
+    > 	subgraph src-controller 查询有效性
+    > 	controllerClass((控制器.)) --- conUser(conUser.js)
+    > 	end
+    > 	app --> user --- conUser
+    > ```
+
++ session 写入 redis
+
++ 开发登录功能，和前端联调（用到 nginx 反向代理）
