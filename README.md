@@ -406,7 +406,7 @@ graph LR
       res.setHeader('Set-Cookie','配置参数')
       ```
 
-    > 当前小节 对应该 [ stmpBlog v1.0.2 版本](https://github.com/lailer132/simpBlog/tree/v1.0.1)
+    > 当前小节 对应该 [ stmpBlog v1.0.2 版本](https://github.com/lailer132/simpBlog/tree/v1.0.2)
     >
     > 以供于学习及回顾以上知识
     >
