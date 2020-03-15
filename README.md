@@ -429,3 +429,27 @@ graph LR
 + session 写入 redis
 
 + 开发登录功能，和前端联调（用到 nginx 反向代理）
+
+
+
+### 13 -  设计 node 中的 cookie 和 session
+
++ 创建一个对象 `session_data` 存储 用户信息的 `session` 数据
+
++ 设置 每个用户 对应的 `key` 和 `value` 值
+  + key 由服务端 生成的唯一标识 发送给 客户端 `cookie` 保存
+  + 服务端 获取 客户端 `cookie` `key` 的 `value` 值来查找 对应`session[key]`
++ 判断 `cookie.key` 是否存在，若不存在，则生成新的 key
++ 若存在 `key`，再判断是否在 session_data[key] 中存在
+  + 不存在 `session_data[key]`，则新声明 `session_data[key]`
++ 每次登录，都将在该 `session[key]` 中，将用户信息保存起来
+  +  `session[key].username = data.username`
+  + `session[key].message = data.message`
++ `session_data` 数据的存放问题， 及解决方案
+  + `session` 存在 进程中，进程大小容量有限
+  + 变量在进程中存在局限性，不易扩展
+  + 解决方案，采用 `redis` 独立性，可扩展性
+
+> 当前 13 小节 对应该 [ stmpBlog v1.0.3 版本](https://github.com/lailer132/simpBlog/tree/v1.0.3)
+>
+> 以供于学习及回顾以上知识

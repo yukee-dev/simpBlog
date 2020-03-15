@@ -2,6 +2,9 @@ const querystring = require('querystring')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
 
+// session 数据
+const SESSION_DATA = {}
+
 // 用于处理 post data
 const getPostData = req => {
     return new Promise((resolve, reject) => {
@@ -29,6 +32,13 @@ const getPostData = req => {
     })
 }
 
+// 获取 cookie 的过期事件
+const setCookieExpires = () => {
+    const d = new Date()
+    d.setTime(d.getTime() + (24 * 60 * 60 * 1000))
+    return d.toGMTString()
+}
+
 const serverHandle = (req, res) => {
     // 1. 设置返回格式
     res.setHeader('Content-type', 'application/json')
@@ -44,7 +54,7 @@ const serverHandle = (req, res) => {
     // 5. 解析 cookie
     req.cookie = {}
     const cookieStr = req.headers.cookie.replace(/\s+/g, '') || ''
-    cookieStr.split(';').forEach( item => {
+    cookieStr.split(';').forEach(item => {
         if (!item) {
             return
         }
@@ -55,6 +65,19 @@ const serverHandle = (req, res) => {
     })
     console.log('req.cookie is ...', req.cookie)
 
+    // 6. 解析 session
+    let needSetCoookie = false
+    let userId = req.cookie.userId
+    if (userId) {
+        if (!SESSION_DATA[userId]) {
+            SESSION_DATA[userId] = {}
+        }
+    } else {
+        needSetCoookie = true
+        userId = Date.now() + "" + Math.random()
+        SESSION_DATA[userId] = {}
+    }
+    req.session = SESSION_DATA[userId]
     getPostData(req).then(postData => {
         req.body = postData
 
@@ -69,6 +92,11 @@ const serverHandle = (req, res) => {
         const blogResult = handleBlogRouter(req, res)
         if (blogResult) {
             blogResult.then(blogData => {
+                if (needSetCoookie) {
+                    // 操作 cookie
+                    res.setHeader('Set-Cookie', `userId=${userId}; path=/; httpOnly; expires=${setCookieExpires()};`)
+    
+                }
                 res.end(
                     JSON.stringify(blogData)
                 )
@@ -79,6 +107,11 @@ const serverHandle = (req, res) => {
         const userResult = handleUserRouter(req, res)
         if (userResult) {
             userResult.then(userData => {
+                if (needSetCoookie) {
+                    // 操作 cookie
+                    res.setHeader('Set-Cookie', `userId=${userId}; path=/; httpOnly; expires=${setCookieExpires()};`)
+    
+                }
                 res.end(
                     JSON.stringify(userData)
                 )
