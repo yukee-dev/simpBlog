@@ -9,8 +9,8 @@
 
 ### 2 - 安装依赖
 
-+ `cross-env`
-+ `nodemon`
++ npm install  `cross-env` -S
++ npm install  `nodemon` -D
 
 在package.json 添加开发环境脚本：
 
@@ -440,7 +440,7 @@ graph LR
   + key 由服务端 生成的唯一标识 发送给 客户端 `cookie` 保存
   + 服务端 获取 客户端 `cookie` `key` 的 `value` 值来查找 对应`session[key]`
 + 判断 `cookie.key` 是否存在，若不存在，则生成新的 key
-+ 若存在 `key`，再判断是否在 session_data[key] 中存在
++ 若存在 `key`，再判断 `cookie.key` 是否在 session_data[key] 中存在
   + 不存在 `session_data[key]`，则新声明 `session_data[key]`
 + 每次登录，都将在该 `session[key]` 中，将用户信息保存起来
   +  `session[key].username = data.username`
@@ -453,3 +453,46 @@ graph LR
 > 当前 13 小节 对应该 [ stmpBlog v1.0.3 版本](https://github.com/lailer132/simpBlog/tree/v1.0.3)
 >
 > 以供于学习及回顾以上知识
+
+
+
+### 14 - redis review session
+
++ 安装 redis，并启动服务
++ npm install redis 模块
++ config/conf.js -> db/redis.js
++ 封装 redis 并导出 get set 方法
+
+> 当前 14 小节 对应该 [ stmpBlog v1.0.4 版本](https://github.com/lailer132/simpBlog/tree/v1.0.4)
+>
+> 以供于学习及回顾以上知识
+
+
+
+### 15 - 联调 与 Nginx
+
++ 跨域是什么？
+
+  + 跨域，是指浏览器不能执行其他网站的脚本。它是由**浏览器的同源策略**造成的，是浏览器对JavaScript实施的安全限制。
+
++ 跨域的解决方案有哪些？
+
+  + JSONP
+  + CORS
+  + 代理跨域
+
++ 接下来我们使用 Nginx 反向代理进行跨域联调
+
+  + 安装 Nginx 及 反向代理配置 conf
+
+    ```mermaid
+    graph TB
+    	browser(浏览器)
+    	subgraph 服务端
+    	nginx -- /... --> html
+    	nginx -- /api/... --> nodejs
+    	end
+    	browser -- localhost/index.html --> nginx
+    ```
+
+    
